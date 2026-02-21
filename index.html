@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم راوتر شاومي</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .login-btn:hover {
+            background: #5568d3;
+        }
+        
+        .dashboard {
+            display: none;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 1200px;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            background: #333;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .nav-tabs button {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: 0.3s;
+            text-align: center;
+        }
+        
+        .nav-tabs button:hover {
+            background: #444;
+        }
+        
+        .nav-tabs button.active {
+            background: #667eea;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .card-value {
+            font-size: 20px;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .card-status {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-right: 5px;
+            transition: 0.3s;
+        }
+        
+        .btn:hover {
+            background: #5568d3;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .form-group-inline {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #e74c3c;
+        }
+        
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+        
+        .device-list {
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .device-item {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .device-item:last-child {
+            border-bottom: none;
+        }
+        
+        .device-info {
+            flex: 1;
+        }
+        
+        .device-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .device-ip {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .device-signal {
+            color: #27ae60;
+            font-size: 12px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Form -->
+    <div class="login-container" id="loginForm">
+        <div class="login-header">
+            <h1>🌐 راوتر شاومي</h1>
+            <p>لوحة التحكم</p>
+        </div>
+        <form onsubmit="login(event)">
+            <div class="form-group">
+                <label>كلمة المرور:</label>
+                <input type="password" id="password" required>
+            </div>
+            <button type="submit" class="login-btn">دخول</button>
+        </form>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboard">
+        <button class="btn btn-danger logout-btn" onclick="logout()">تسجيل خروج</button>
+        
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab(0)">🌐 الشبكة</button>
+            <button class="tab-btn" onclick="switchTab(1)">🔄 تحديث النظام</button>
+            <button class="tab-btn" onclick="switchTab(2)">📡 اتصال الشبكة</button>
+            <button class="tab-btn" onclick="switchTab(3)">🖥️ الأجهزة المتصلة</button>
+            <button class="tab-btn" onclick="switchTab(4)">⚙️ الإعدادات</button>
+        </div>
+
+        <!-- Tab 1: Network Control -->
+        <div class="tab-content active">
+            <h2 class="section-title">🌐 تحكم في الشبكة</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>سرعة التحميل</h3>
+                    <div class="card-value">45.2 Mbps</div>
+                    <div class="card-status">متصل - جيد</div>
+                    <button class="btn" onclick="testSpeed()">اختبار السرعة</button>
+                </div>
+                <div class="card">
+                    <h3>سرعة الرفع</h3>
+                    <div class="card-value">18.5 Mbps</div>
+                    <div class="card-status">متثابت</div>
+                </div>
+                <div class="card">
+                    <h3>ping</h3>
+                    <div class="card-value">15 ms</div>
+                    <div class="card-status">ممتاز</div>
+                </div>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                <h3 style="margin-bottom: 15px; color: #333;">إعدادات WiFi 2.4GHz</h3>
+                <div class="form-group-inline">
+                    <div>
+                        <label>اسم الشبكة (SSID):</label>
+                        <input type="text" value="Xiaomi-WiFi-5G" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    </div>
+                    <div>
+                        <label>كلمة المرور:</label>
+                        <input type="password" value="••••••••" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    </div>
+                </div>
+                <button class="btn" style="margin-top: 15px;">حفظ التغييرات</button>
+            </div>
+        </div>
+
+        <!-- Tab 2: System Update -->
+        <div class="tab-content">
+            <h2 class="section-title">🔄 تحديث نظام الراوتر</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>إصدار النظام</h3>
+                    <div class="card-value">3.0.8</div>
+                    <div class="card-status">الإصدار الحالي</div>
+                </div>
+                <div class="card">
+                    <h3>آخر تحديث</h3>
+                    <div class="card-value">2024-01-15</div>
+                    <div class="card-status">محدث</div>
+                </div>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                <h3 style="margin-bottom: 15px; color: #333;">التحديثات المتاحة</h3>
+                <p style="color: #666; margin-bottom: 15px;">إصدار جديد متاح: 3.0.9</p>
+                <p style="font-size: 12px; color: #999; margin-bottom: 15px;">
+                    ✓ تحسينات الأمان<br>
+                    ✓ تحسينات الأداء<br>
+                    ✓ إصلاح الأخطاء
+                </p>
+                <button class="btn" onclick="updateSystem()" style="background: #27ae60;">
+                    تحديث الآن
+                </button>
+                <button class="btn" style="background: #95a5a6;">تحديث لاحقاً</button>
+            </div>
+        </div>
+
+        <!-- Tab 3: Network Connection -->
+        <div class="tab-content">
+            <h2 class="section-title">📡 اتصال الشبكة</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>حالة الإنترنت</h3>
+                    <div class="card-value" style="color: #27ae60;">متصل</div>
+                    <button class="btn btn-danger" onclick="disconnectInternet()">قطع الاتصال</button>
+                </div>
+                <div class="card">
+                    <h3>عنوان IP</h3>
+                    <div class="card-value" style="font-size: 14px;">192.168.1.1</div>
+                    <button class="btn" onclick="renewIP()">تجديد IP</button>
+                </div>
+                <div class="card">
+                    <h3>MAC Address</h3>
+                    <div class="card-value" style="font-size: 14px;">00:1A:2B:3C:4D:5E</div>
+                </div>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <h3 style="margin-bottom: 15px; color: #333;">تعديل إعدادات الاتصال</h3>
+                <div class="form-group-inline">
+                    <div>
+                        <label>نوع الاتصال:</label>
+                        <select style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                            <option>DHCP تلقائي</option>
+                            <option>IP ثابت</option>
+                            <option>PPPoE</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>خادم DNS:</label>
+                        <input type="text" value="8.8.8.8" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    </div>
+                </div>
+                <button class="btn" style="margin-top: 15px;">حفظ الاتصال</button>
+            </div>
+        </div>
+
+        <!-- Tab 4: Connected Devices -->
+        <div class="tab-content">
+            <h2 class="section-title">🖥️ الأجهزة المتصلة</h2>
+            <p style="color: #666; margin-bottom: 15px;">عدد الأجهزة المتصلة: <strong>7</strong></p>
+            
+            <div class="device-list">
+                <div class="device-item">
+                    <div class="device-info">
+                        <div class="device-name">📱 هاتفي</div>
+                        <div class="device-ip">192.168.1.5 | 2.4GHz</div>
+                    </div>
+                    <div class="device-signal">📶 قوي</div>
+                </div>
+                <div class="device-item">
+                    <div class="device-info">
+                        <div class="device-name">💻 الكمبيوتر</div>
+                        <div class="device-ip">192.168.1.6 | 5GHz</div>
+                    </div>
+                    <div class="device-signal">📶 ممتاز</div>
+                </div>
+                <div class="device-item">
+                    <div class="device-info">
+                        <div class="device-name">📺 التلفاز الذكي</div>
+                        <div class="device-ip">192.168.1.7 | 2.4GHz</div>
+                    </div>
+                    <div class="device-signal">📶 جيد</div>
+                </div>
+                <div class="device-item">
+                    <div class="device-info">
+                        <div class="device-name">⌚ الساعة الذكية</div>
+                        <div class="device-ip">192.168.1.8 | 2.4GHz</div>
+                    </div>
+                    <div class="device-signal">📶 ضعيف</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 5: Settings -->
+        <div class="tab-content">
+            <h2 class="section-title">⚙️ الإعدادات</h2>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <h3 style="color: #333; margin-bottom: 15px;">إعدادات الأمان</h3>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: flex; align-items: center; cursor: pointer;">
+                        <input type="checkbox" checked>
+                        <span style="margin-right: 10px; color: #333;">تفعيل جدار الحماية</span>
+                    </label>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: flex; align-items: center; cursor: pointer;">
+                        <input type="checkbox" checked>
+                        <span style="margin-right: 10px; color: #333;">فلترة المحتوى</span>
+                    </label>
+                </div>
+                <button class="btn">حفظ الإعدادات</button>
+            </div>
+
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                <h3 style="color: #333; margin-bottom: 15px;">إجراءات</h3>
+                <button class="btn" onclick="restartRouter()">إعادة تشغيل الراوتر</button>
+                <button class="btn btn-danger" onclick="resetRouter()">إعادة تعيين الإعدادات</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function login(event) {
+            event.preventDefault();
+            const password = document.getElementById('password').value;
+            if (password === 'admin') {
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+            } else {
+                alert('كلمة المرور غير صحيحة');
+            }
+        }
+
+        function logout() {
+            document.getElementById('loginForm').style.display = 'flex';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('password').value = '';
+        }
+
+        function switchTab(index) {
+            const contents = document.querySelectorAll('.tab-content');
+            const buttons = document.querySelectorAll('.tab-btn');
+            
+            contents.forEach(content => content.classList.remove('active'));
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            contents[index].classList.add('active');
+            buttons[index].classList.add('active');
+        }
+
+        function testSpeed() {
+            alert('جاري اختبار سرعة الاتصال...');
+        }
+
+        function updateSystem() {
+            alert('جاري تحديث النظام... لا تقطع الكهرباء');
+        }
+
+        function disconnectInternet() {
+            alert('تم قطع الاتصال');
+        }
+
+        function renewIP() {
+            alert('تم تجديد عنوان IP');
+        }
+
+        function restartRouter() {
+            alert('جاري إعادة تشغيل الراوتر...');
+        }
+
+        function resetRouter() {
+            if (confirm('هل أنت متأكد من إعادة تعيين الإعدادات؟')) {
+                alert('تم إعادة تعيين الإعدادات');
+            }
+        }
+    </script>
+</body>
+</html>
+// Enhanced functionality for router dashboard
+
+// Local storage for settings
+function saveSettings() {
+    const settings = {
+    ssid: document.querySelector('input[value="Xiaomi-WiFi-5G"]').value,
+    theme: 'dark'
+    };
+    localStorage.setItem('routerSettings', JSON.stringify(settings));
+    alert('تم حفظ الإعدادات بنجاح');
+}
+
+// Real-time network stats
+function updateNetworkStats() {
+    const stats = {
+    download: (Math.random() * 50 + 20).toFixed(1),
+    upload: (Math.random() * 25 + 10).toFixed(1),
+    ping: Math.floor(Math.random() * 30 + 5)
+    };
+    return stats;
+}
+
+// Device management
+function blockDevice(deviceName) {
+    if (confirm(`حظر ${deviceName}؟`)) {
+    alert(`تم حظر ${deviceName}`);
+    }
+}
+
+// WiFi password generator
+function generatePassword() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let password = '';
+    for (let i = 0; i < 12; i++) {
+    password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return password;
+}
+
+// Initialize dashboard on load
+window.addEventListener('load', function() {
+    const savedSettings = localStorage.getItem('routerSettings');
+    if (savedSettings) {
+    const settings = JSON.parse(savedSettings);
+    console.log('تم استرجاع الإعدادات:', settings);
+    }
+});
